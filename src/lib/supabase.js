@@ -5,14 +5,14 @@ const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY
 
 const supabase = supabaseUrl && supabaseKey ? createClient(supabaseUrl, supabaseKey) : null
 
-export async function saveResult({ nome, email, answers, scores, topSaboteurs }) {
+export async function saveResult({ nome, email, telefone, answers, scores, topSaboteurs }) {
   if (!supabase) {
     console.warn('Supabase não configurado')
     return { id: Date.now().toString() }
   }
   const { data, error } = await supabase
     .from('sabotagem_results')
-    .insert([{ nome, email, answers, scores, top_saboteurs: topSaboteurs, created_at: new Date().toISOString() }])
+    .insert([{ nome, email, telefone, answers, scores, top_saboteurs: topSaboteurs, created_at: new Date().toISOString() }])
     .select()
   if (error) throw error
   return data[0]

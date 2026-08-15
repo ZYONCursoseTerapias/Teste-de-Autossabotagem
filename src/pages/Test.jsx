@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { blocks, calcScores, getTopSaboteurs } from '../data/questions'
+import { blocks, calcScores, getTopSaboteurs, getMaxScore, saboteurKeys } from '../data/questions'
+import { saboteurs, saboteurLabels } from '../data/saboteurs'
 import { saveResult } from '../lib/supabase'
-import emailjs from 'emailjs-com'
+import emailjs from '@emailjs/browser'
 
-const LABELS = ['Discordo fortemente', 'Discordo', 'Neutro', 'Concordo', 'Concordo fortemente']
+const LABELS = ['Discordo totalmente', 'Discordo', 'Neutro', 'Concordo', 'Concordo totalmente']
 
 export default function Test() {
   const navigate = useNavigate()
@@ -51,22 +52,78 @@ export default function Test() {
     try {
       const scores = calcScores(answers)
       const topSaboteurs = getTopSaboteurs(scores)
+      const rankedSaboteurs = saboteurKeys
+        .map(key => ({
+          key,
+          name: saboteurLabels[key],
+          pct: Math.round((scores[key] / getMaxScore(key)) * 100),
+        }))
+        .sort((a, b) => b.pct - a.pct)
 
-      await saveResult({ nome: user.nome, email: user.email, answers, scores, topSaboteurs })
+      const primary = saboteurs[topSaboteurs[0]]
+      const secondary = saboteurs[topSaboteurs[1]]
+      const scoresSummary = rankedSaboteurs
+        .map(item => `${item.name}: ${item.pct}%`)
+        .join('\n')
+      const judgeSummary = [
+        `Autocrítica: ${Math.round((scores.juiz_auto / 15) * 100)}%`,
+        `Crítica aos outros: ${Math.round((scores.juiz_outros / 15) * 100)}%`,
+        `Crítica às circunstâncias: ${Math.round((scores.juiz_circ / 10) * 100)}%`,
+      ].join('\n')
+      const fullResult = [
+        `Sabotadora principal: ${primary.name}`,
+        primary.description,
+        '',
+        `Segunda sabotadora: ${secondary.name}`,
+        secondary.description,
+        '',
+        'Pontuações:',
+        scoresSummary,
+        '',
+        'Como o Juiz aparece:',
+        judgeSummary,
+      ].join('\n')
+
+      try {
+        await saveResult({ nome: user.nome, email: user.email, telefone: user.telefone, answers, scores, topSaboteurs })
+      } catch (saveErr) {
+        console.warn('Não foi possível salvar o resultado no Supabase:', saveErr)
+      }
 
       const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID
-      const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID
+      const adminTemplateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID
+      const resultTemplateId = import.meta.env.VITE_EMAILJS_RESULT_TEMPLATE_ID || 'template_x1s01ct'
       const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY
 
-      if (serviceId && templateId && publicKey) {
+      if (serviceId && publicKey) {
         try {
-          await emailjs.send(serviceId, templateId, {
-            to_name: 'Sandrä',
-            from_name: user.nome,
-            from_email: user.email,
-            message: `Nova cliente preencheu o Teste de Autossabotagem!\n\nNome: ${user.nome}\nE-mail: ${user.email}\nSabotadores em destaque: ${topSaboteurs.join(', ')}`,
+          await emailjs.send(serviceId, resultTemplateId, {
+            to_name: user.nome,
+            to_email: user.email,
+            client_name: user.nome,
+            client_email: user.email,
+            client_phone: user.telefone,
+            sabotador_principal: primary.name,
+            segundo_sabotador: secondary.name,
+            descricao_principal: primary.description,
+            descricao_secundaria: secondary.description,
+            pontuacoes: scoresSummary,
+            juiz: judgeSummary,
+            resultado: fullResult,
+            message: fullResult,
             reply_to: user.email,
-          }, publicKey)
+          }, { publicKey })
+
+          if (adminTemplateId) {
+            await emailjs.send(serviceId, adminTemplateId, {
+              to_name: 'Sandrä',
+              from_name: user.nome,
+              from_email: user.email,
+              client_phone: user.telefone,
+              message: `Nova cliente preencheu o Teste de Autossabotagem!\n\nNome: ${user.nome}\nE-mail: ${user.email}\nCelular: ${user.telefone}\nSabotadoras em destaque: ${primary.name} e ${secondary.name}`,
+              reply_to: user.email,
+            }, { publicKey })
+          }
         } catch (emailErr) {
           console.warn('Erro ao enviar e-mail:', emailErr)
         }
@@ -121,26 +178,27 @@ export default function Test() {
                   <span className="font-bold mr-2" style={{ color: '#6CC24A' }}>{idx + 1}.</span>
                   {q.text}
                 </p>
-                <div className="flex gap-2 flex-wrap">
+                <div className="grid grid-cols-5 gap-2">
                   {[1, 2, 3, 4, 5].map(val => (
-                    <button
-                      key={val}
-                      onClick={() => handleAnswer(q.id, val)}
-                      title={LABELS[val - 1]}
-                      className="flex-1 min-w-[40px] py-2.5 rounded-xl text-sm font-semibold transition-all duration-150 border-2"
-                      style={{
-                        borderColor: answers[q.id] === val ? '#1E6F30' : '#e5e7eb',
-                        background: answers[q.id] === val ? '#1E6F30' : 'white',
-                        color: answers[q.id] === val ? 'white' : '#6b7280',
-                      }}
-                    >
-                      {val}
-                    </button>
+                    <div key={val} className="min-w-0 text-center">
+                      <button
+                        onClick={() => handleAnswer(q.id, val)}
+                        title={LABELS[val - 1]}
+                        aria-label={`${val}: ${LABELS[val - 1]}`}
+                        className="w-full py-2.5 rounded-xl text-sm font-semibold transition-all duration-150 border-2"
+                        style={{
+                          borderColor: answers[q.id] === val ? '#1E6F30' : '#e5e7eb',
+                          background: answers[q.id] === val ? '#1E6F30' : 'white',
+                          color: answers[q.id] === val ? 'white' : '#6b7280',
+                        }}
+                      >
+                        {val}
+                      </button>
+                      <span className="block mt-1.5 text-[10px] leading-tight text-gray-400 break-words">
+                        {LABELS[val - 1]}
+                      </span>
+                    </div>
                   ))}
-                </div>
-                <div className="flex justify-between mt-1.5">
-                  <span className="text-xs text-gray-400">Discordo</span>
-                  <span className="text-xs text-gray-400">Concordo</span>
                 </div>
               </div>
             ))}
@@ -171,6 +229,9 @@ export default function Test() {
           </button>
         </div>
       </main>
+      <footer className="px-4 py-5 text-center text-xs text-gray-400">
+        Sandrä Costa | Terapeuta Holística e Comportamental
+      </footer>
     </div>
   )
 }

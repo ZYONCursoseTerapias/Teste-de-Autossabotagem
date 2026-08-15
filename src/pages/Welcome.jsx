@@ -85,7 +85,7 @@ export default function Welcome() {
 
         {/* Footer */}
         <p className="text-center text-xs text-gray-400 mt-8">
-          💋 no 💚 · Sandrä Costa · {new Date().getFullYear()}
+          Sandrä Costa | Terapeuta Holística e Comportamental
         </p>
       </main>
     </div>

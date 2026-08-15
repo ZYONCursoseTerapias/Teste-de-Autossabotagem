@@ -3,7 +3,9 @@ import { useNavigate } from 'react-router-dom'
 import { saboteurs, juizInfo, saboteurLabels } from '../data/saboteurs'
 import { saboteurKeys, getMaxScore } from '../data/questions'
 
-const WA_LINK = 'https://wa.me/5511957947776?text=Ol%C3%A1%2C+Sandra%21+Acabei+de+fazer+o+Teste+de+Autossabotagem+e+gostaria+de+agendar+minha+sess%C3%A3o.'
+const whatsappNumber = import.meta.env.VITE_WHATSAPP_NUMBER?.replace(/\D/g, '')
+const whatsappMessage = encodeURIComponent('Olá, Sandra! Acabei de fazer o Teste de Autossabotagem e gostaria de agendar minha sessão.')
+const whatsappLink = whatsappNumber ? `https://wa.me/${whatsappNumber}?text=${whatsappMessage}` : null
 
 function ScoreBar({ pct, color = '#6CC24A', height = 8 }) {
   return (
@@ -212,20 +214,22 @@ export default function Results() {
           <p className="text-sm text-white opacity-80 mb-5 leading-relaxed">
             Em uma sessão individual, vamos trabalhar juntas para identificar a origem dos seus sabotadores e criar estratégias reais de mudança.
           </p>
-          <a
-            href={WA_LINK}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-block px-8 py-3.5 rounded-2xl font-bold text-sm shadow-md transition-all hover:opacity-90 active:scale-95"
-            style={{ background: '#EFBE7D', color: '#1E6F30' }}
-          >
-            💬 Agendar minha sessão
-          </a>
+          {whatsappLink && (
+            <a
+              href={whatsappLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block px-8 py-3.5 rounded-2xl font-bold text-sm shadow-md transition-all hover:opacity-90 active:scale-95"
+              style={{ background: '#EFBE7D', color: '#1E6F30' }}
+            >
+              💬 Agendar minha sessão
+            </a>
+          )}
         </div>
 
         {/* Footer */}
         <p className="text-center text-xs text-gray-400 mt-8">
-          💋 no 💚 · Sandrä Costa · {new Date().getFullYear()}
+          Sandrä Costa | Terapeuta Holística e Comportamental
         </p>
       </main>
     </div>

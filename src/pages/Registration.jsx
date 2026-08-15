@@ -3,13 +3,17 @@ import { useNavigate } from 'react-router-dom'
 
 export default function Registration() {
   const navigate = useNavigate()
-  const [form, setForm] = useState({ nome: '', email: '' })
+  const [form, setForm] = useState({ nome: '', email: '', pais: '55', ddd: '', celular: '', consentimento: false })
   const [errors, setErrors] = useState({})
 
   function validate() {
     const e = {}
     if (!form.nome.trim()) e.nome = 'Por favor, informe seu nome.'
     if (!form.email.trim() || !/\S+@\S+\.\S+/.test(form.email)) e.email = 'Por favor, informe um e-mail válido.'
+    if (!/^\d{1,3}$/.test(form.pais)) e.pais = 'Informe o código do país.'
+    if (!/^\d{2,3}$/.test(form.ddd)) e.ddd = 'Informe o código da cidade.'
+    if (!/^\d{8,9}$/.test(form.celular)) e.celular = 'Informe um número de celular válido.'
+    if (!form.consentimento) e.consentimento = 'Confirme a autorização para gerar e enviar seu resultado.'
     return e
   }
 
@@ -17,7 +21,8 @@ export default function Registration() {
     e.preventDefault()
     const errs = validate()
     if (Object.keys(errs).length > 0) { setErrors(errs); return }
-    sessionStorage.setItem('sabotagem_user', JSON.stringify(form))
+    const user = { ...form, telefone: `+${form.pais}${form.ddd}${form.celular}` }
+    sessionStorage.setItem('sabotagem_user', JSON.stringify(user))
     navigate('/teste')
   }
 
@@ -54,7 +59,7 @@ export default function Registration() {
               {errors.nome && <p className="text-xs text-red-500 mt-1">{errors.nome}</p>}
             </div>
 
-            <div className="mb-8">
+            <div className="mb-5">
               <label className="block text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: '#1E6F30' }}>
                 E-mail
               </label>
@@ -67,6 +72,62 @@ export default function Registration() {
                 style={{ borderColor: errors.email ? '#e53e3e' : '#9BE198', background: '#f9f7f4' }}
               />
               {errors.email && <p className="text-xs text-red-500 mt-1">{errors.email}</p>}
+            </div>
+
+            <div className="mb-8">
+              <label className="block text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: '#1E6F30' }}>
+                Celular
+              </label>
+              <div className="grid grid-cols-[72px_76px_1fr] gap-2">
+                <input
+                  type="tel"
+                  inputMode="numeric"
+                  aria-label="Código do país"
+                  value={form.pais}
+                  onChange={e => setForm({ ...form, pais: e.target.value.replace(/\D/g, '').slice(0, 3) })}
+                  placeholder="55"
+                  className="w-full px-3 py-3 rounded-xl border text-sm outline-none"
+                  style={{ borderColor: errors.pais ? '#e53e3e' : '#9BE198', background: '#f9f7f4' }}
+                />
+                <input
+                  type="tel"
+                  inputMode="numeric"
+                  aria-label="Código da cidade"
+                  value={form.ddd}
+                  onChange={e => setForm({ ...form, ddd: e.target.value.replace(/\D/g, '').slice(0, 3) })}
+                  placeholder="DDD"
+                  className="w-full px-3 py-3 rounded-xl border text-sm outline-none"
+                  style={{ borderColor: errors.ddd ? '#e53e3e' : '#9BE198', background: '#f9f7f4' }}
+                />
+                <input
+                  type="tel"
+                  inputMode="numeric"
+                  aria-label="Número do celular"
+                  value={form.celular}
+                  onChange={e => setForm({ ...form, celular: e.target.value.replace(/\D/g, '').slice(0, 9) })}
+                  placeholder="Número do celular"
+                  className="w-full px-3 py-3 rounded-xl border text-sm outline-none"
+                  style={{ borderColor: errors.celular ? '#e53e3e' : '#9BE198', background: '#f9f7f4' }}
+                />
+              </div>
+              <p className="text-xs text-gray-400 mt-1.5">País, cidade e número.</p>
+              {(errors.pais || errors.ddd || errors.celular) && (
+                <p className="text-xs text-red-500 mt-1">{errors.pais || errors.ddd || errors.celular}</p>
+              )}
+            </div>
+
+            <div className="mb-6">
+              <label className="flex items-start gap-3 text-sm text-gray-600 leading-relaxed cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={form.consentimento}
+                  onChange={e => setForm({ ...form, consentimento: e.target.checked })}
+                  className="mt-1 h-4 w-4"
+                  style={{ accentColor: '#1E6F30' }}
+                />
+                <span>Autorizo o uso das informações fornecidas para calcular, armazenar e enviar meu resultado.</span>
+              </label>
+              {errors.consentimento && <p className="text-xs text-red-500 mt-1">{errors.consentimento}</p>}
             </div>
 
             <button
@@ -83,6 +144,9 @@ export default function Registration() {
           </p>
         </div>
       </main>
+      <footer className="px-4 py-5 text-center text-xs text-gray-400">
+        Sandrä Costa | Terapeuta Holística e Comportamental
+      </footer>
     </div>
   )
 }
