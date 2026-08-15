@@ -6,6 +6,11 @@ import { saveResult } from '../lib/supabase'
 import emailjs from '@emailjs/browser'
 
 const LABELS = ['Discordo totalmente', 'Discordo', 'Neutro', 'Concordo', 'Concordo totalmente']
+const WHATSAPP_NUMBER = import.meta.env.VITE_WHATSAPP_NUMBER?.replace(/\D/g, '') || '5511957947776'
+const WHATSAPP_MESSAGE = encodeURIComponent('Olá, Sandrä. Concluí o Teste de Autossabotagem e gostaria de agendar um Atendimento para Análise dos Sabotadores.')
+const WHATSAPP_LINK = `https://wa.me/${WHATSAPP_NUMBER}?text=${WHATSAPP_MESSAGE}`
+const SERVICE_TITLE = 'Atendimento para Análise dos Sabotadores'
+const SERVICE_DESCRIPTION = 'Atendimento individual para analisar o resultado do seu teste, identificar seus principais sabotadores e compreender como esses padrões podem estar interferindo em diferentes áreas da sua vida.'
 
 export default function Test() {
   const navigate = useNavigate()
@@ -84,6 +89,10 @@ export default function Test() {
         '',
         'Como o Juiz aparece:',
         judgeSummary,
+        '',
+        SERVICE_TITLE,
+        SERVICE_DESCRIPTION,
+        `Solicite seu atendimento: ${WHATSAPP_LINK}`,
       ].join('\n')
 
       try {
@@ -118,6 +127,10 @@ export default function Test() {
           juiz: judgeSummary,
           resultado: fullResult,
           message: fullResult,
+          atendimento_titulo: SERVICE_TITLE,
+          atendimento_descricao: SERVICE_DESCRIPTION,
+          atendimento_link: WHATSAPP_LINK,
+          whatsapp_link: WHATSAPP_LINK,
           reply_to: user.email,
         }, { publicKey })
         emailSent = true
@@ -136,6 +149,10 @@ export default function Test() {
           sabotador_principal: primary.name,
           segundo_sabotador: secondary.name,
           resultado: fullResult,
+          atendimento_titulo: SERVICE_TITLE,
+          atendimento_descricao: SERVICE_DESCRIPTION,
+          atendimento_link: WHATSAPP_LINK,
+          whatsapp_link: WHATSAPP_LINK,
           message: `Novo Teste de Autossabotagem concluído.\n\nCliente: ${user.nome}\nEmail: ${user.email}\nCelular: ${user.telefone}\n\n${fullResult}`,
           reply_to: user.email,
         }, { publicKey })

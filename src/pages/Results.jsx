@@ -3,9 +3,9 @@ import { useNavigate } from 'react-router-dom'
 import { saboteurs, juizInfo, saboteurLabels } from '../data/saboteurs'
 import { saboteurKeys, getMaxScore } from '../data/questions'
 
-const whatsappNumber = import.meta.env.VITE_WHATSAPP_NUMBER?.replace(/\D/g, '')
-const whatsappMessage = encodeURIComponent('Olá, Sandra! Acabei de fazer o Teste de Autossabotagem e gostaria de agendar minha sessão.')
-const whatsappLink = whatsappNumber ? `https://wa.me/${whatsappNumber}?text=${whatsappMessage}` : null
+const whatsappNumber = import.meta.env.VITE_WHATSAPP_NUMBER?.replace(/\D/g, '') || '5511957947776'
+const whatsappMessage = encodeURIComponent('Olá, Sandrä. Concluí o Teste de Autossabotagem e gostaria de agendar um Atendimento para Análise dos Sabotadores.')
+const whatsappLink = `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`
 
 function ScoreBar({ pct, color = '#6CC24A', height = 8 }) {
   return (
@@ -208,23 +208,21 @@ export default function Results() {
 
         {/* ===== CTA ===== */}
         <div className="rounded-2xl p-6 text-center shadow-md mt-8 fade-in" style={{ background: 'linear-gradient(135deg, #1E6F30, #6CC24A)' }}>
-          <p className="playfair text-xl font-semibold text-white mb-2">
-            Pronta para transformar esses padrões?
+          <p className="playfair text-xl font-semibold text-white mb-3">
+            Atendimento para Análise dos Sabotadores
           </p>
           <p className="text-sm text-white opacity-80 mb-5 leading-relaxed">
-            Em uma sessão individual, vamos trabalhar juntas para identificar a origem dos seus sabotadores e criar estratégias reais de mudança.
+            Atendimento individual para analisar o resultado do seu teste, identificar seus principais sabotadores e compreender como esses padrões podem estar interferindo em diferentes áreas da sua vida.
           </p>
-          {whatsappLink && (
-            <a
-              href={whatsappLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block px-8 py-3.5 rounded-2xl font-bold text-sm shadow-md transition-all hover:opacity-90 active:scale-95"
-              style={{ background: '#EFBE7D', color: '#1E6F30' }}
-            >
-              Agendar minha sessão
-            </a>
-          )}
+          <a
+            href={whatsappLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block px-8 py-3.5 rounded-2xl font-bold text-sm shadow-md transition-all hover:opacity-90 active:scale-95"
+            style={{ background: '#EFBE7D', color: '#1E6F30' }}
+          >
+            Solicitar atendimento
+          </a>
         </div>
 
         {/* Footer */}
