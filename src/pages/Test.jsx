@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useLayoutEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { blocks, calcScores, getTopSaboteurs, getMaxScore, saboteurKeys } from '../data/questions'
 import { saboteurs, saboteurLabels } from '../data/saboteurs'
@@ -26,6 +26,10 @@ export default function Test() {
 
   const allAnswered = block.questions.every(q => answers[q.id] !== undefined)
 
+  useLayoutEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
+  }, [currentBlock])
+
   function handleAnswer(id, val) {
     setAnswers(prev => ({ ...prev, [id]: val }))
   }
@@ -34,7 +38,6 @@ export default function Test() {
     if (!allAnswered) return
     if (currentBlock < totalBlocks - 1) {
       setCurrentBlock(prev => prev + 1)
-      window.scrollTo({ top: 0, behavior: 'smooth' })
     } else {
       handleSubmit()
     }
@@ -43,7 +46,6 @@ export default function Test() {
   function handlePrev() {
     if (currentBlock > 0) {
       setCurrentBlock(prev => prev - 1)
-      window.scrollTo({ top: 0, behavior: 'smooth' })
     }
   }
 
