@@ -80,8 +80,7 @@ export default function Results() {
         {/* ===== O JUIZ ===== */}
         <div className="rounded-2xl overflow-hidden shadow-md mb-6 fade-in" style={{ background: '#1E6F30' }}>
           <div className="px-6 py-5 border-b border-white border-opacity-20">
-            <div className="flex items-center gap-3">
-              <span className="text-2xl">{juizInfo.emoji}</span>
+            <div>
               <div>
                 <p className="text-xs font-bold uppercase tracking-widest text-white opacity-60 mb-0.5">Sabotador Universal</p>
                 <h2 className="text-xl font-semibold text-white playfair">{juizInfo.name}</h2>
@@ -137,8 +136,7 @@ export default function Results() {
                   className="px-5 py-4 border-b last:border-b-0"
                   style={{ borderColor: '#f0ede6', background: isTop ? '#f0faf0' : 'white' }}
                 >
-                  <div className="flex items-center gap-3 mb-2">
-                    <span className="text-lg">{info.emoji}</span>
+                  <div className="flex items-center mb-2">
                     <div className="flex-1">
                       <div className="flex justify-between items-center">
                         <span className="text-sm font-semibold" style={{ color: isTop ? '#1E6F30' : '#374151' }}>
@@ -168,8 +166,7 @@ export default function Results() {
           return (
             <div key={key} className="rounded-2xl overflow-hidden shadow-sm mb-4 fade-in" style={{ background: 'white', border: '2px solid #9BE198' }}>
               <div className="px-6 py-5 border-b" style={{ borderColor: '#9BE198', background: '#f0faf0' }}>
-                <div className="flex items-center gap-3">
-                  <span className="text-3xl">{info.emoji}</span>
+                <div>
                   <div>
                     <p className="text-xs font-bold uppercase tracking-widest mb-0.5" style={{ color: '#6CC24A' }}>
                       {i === 0 ? 'Principal sabotadora' : 'Segunda sabotadora'}
@@ -185,12 +182,9 @@ export default function Results() {
                 <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: '#1E6F30' }}>
                   Como isso aparece em você
                 </p>
-                <ul className="space-y-2">
+                <ul className="space-y-2 list-disc pl-5">
                   {info.signs.map((sign, idx) => (
-                    <li key={idx} className="flex items-start gap-2 text-sm text-gray-600">
-                      <span className="mt-0.5 flex-shrink-0" style={{ color: '#6CC24A' }}>✦</span>
-                      {sign}
-                    </li>
+                    <li key={idx} className="text-sm text-gray-600 pl-1">{sign}</li>
                   ))}
                 </ul>
 
@@ -222,7 +216,7 @@ export default function Results() {
               className="inline-block px-8 py-3.5 rounded-2xl font-bold text-sm shadow-md transition-all hover:opacity-90 active:scale-95"
               style={{ background: '#EFBE7D', color: '#1E6F30' }}
             >
-              💬 Agendar minha sessão
+              Agendar minha sessão
             </a>
           )}
         </div>
