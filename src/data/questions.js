@@ -39,7 +39,7 @@ export const blocks = [
     id: 4,
     questions: [
       { id: 'q4_1', text: 'Minha maneira de analisar situações pode fazer com que eu pareça distante ou intelectualmente superior.', saboteur: 'hiper_racional', reverse: false },
-      { id: 'q4_2', text: 'Às vezes deixo uma divergência sem solução por tanto tempo que ela acaba se tornando um problema maior.', saboteur: 'esquivo', reverse: false },
+      { id: 'q4_2', text: 'Costumo evitar conversas difíceis, mesmo quando sei que adiar o assunto pode agravar a situação.', saboteur: 'esquivo', reverse: false },
       { id: 'q4_3', text: 'Tenho dificuldade para relaxar porque minha mente continua antecipando riscos e consequências.', saboteur: 'hipervigilante', reverse: false },
       { id: 'q4_4', text: 'Quando me sinto julgada ou tratada de forma injusta, tendo a me fechar e permanecer ressentida.', saboteur: 'vitima', reverse: false },
       { id: 'q4_5', text: 'Mesmo sem intenção, minha atenção se volta rapidamente para os defeitos e limitações das pessoas.', saboteur: 'juiz_outros', reverse: false },
