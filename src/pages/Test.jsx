@@ -92,47 +92,57 @@ export default function Test() {
         console.warn('Não foi possível salvar o resultado no Supabase:', saveErr)
       }
 
-      const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID
+      const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID || 'service_a1x68ec'
       const adminTemplateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID
       const resultTemplateId = import.meta.env.VITE_EMAILJS_RESULT_TEMPLATE_ID || 'template_x1s01ct'
-      const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY
+      const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY || 'Zl7xHYzIlna9G5ST3'
+      let emailSent = false
 
-      if (serviceId && publicKey) {
+      try {
+        await emailjs.send(serviceId, resultTemplateId, {
+          to_name: user.nome,
+          to_email: user.email,
+          email: user.email,
+          user_email: user.email,
+          recipient_email: user.email,
+          client_name: user.nome,
+          user_name: user.nome,
+          client_email: user.email,
+          client_phone: user.telefone,
+          phone: user.telefone,
+          sabotador_principal: primary.name,
+          segundo_sabotador: secondary.name,
+          descricao_principal: primary.description,
+          descricao_secundaria: secondary.description,
+          pontuacoes: scoresSummary,
+          juiz: judgeSummary,
+          resultado: fullResult,
+          message: fullResult,
+          reply_to: user.email,
+        }, { publicKey })
+        emailSent = true
+      } catch (emailErr) {
+        console.warn('Erro ao enviar o resultado por e-mail:', emailErr)
+      }
+
+      if (adminTemplateId) {
         try {
-          await emailjs.send(serviceId, resultTemplateId, {
-            to_name: user.nome,
-            to_email: user.email,
-            client_name: user.nome,
-            client_email: user.email,
+          await emailjs.send(serviceId, adminTemplateId, {
+            to_name: 'Sandrä',
+            from_name: user.nome,
+            from_email: user.email,
             client_phone: user.telefone,
-            sabotador_principal: primary.name,
-            segundo_sabotador: secondary.name,
-            descricao_principal: primary.description,
-            descricao_secundaria: secondary.description,
-            pontuacoes: scoresSummary,
-            juiz: judgeSummary,
-            resultado: fullResult,
-            message: fullResult,
+            message: `Nova cliente preencheu o Teste de Autossabotagem!\n\nNome: ${user.nome}\nE-mail: ${user.email}\nCelular: ${user.telefone}\nSabotadoras em destaque: ${primary.name} e ${secondary.name}`,
             reply_to: user.email,
           }, { publicKey })
-
-          if (adminTemplateId) {
-            await emailjs.send(serviceId, adminTemplateId, {
-              to_name: 'Sandrä',
-              from_name: user.nome,
-              from_email: user.email,
-              client_phone: user.telefone,
-              message: `Nova cliente preencheu o Teste de Autossabotagem!\n\nNome: ${user.nome}\nE-mail: ${user.email}\nCelular: ${user.telefone}\nSabotadoras em destaque: ${primary.name} e ${secondary.name}`,
-              reply_to: user.email,
-            }, { publicKey })
-          }
-        } catch (emailErr) {
-          console.warn('Erro ao enviar e-mail:', emailErr)
+        } catch (adminEmailErr) {
+          console.warn('Erro ao enviar a notificação administrativa:', adminEmailErr)
         }
       }
 
       sessionStorage.setItem('sabotagem_scores', JSON.stringify(scores))
       sessionStorage.setItem('sabotagem_top', JSON.stringify(topSaboteurs))
+      sessionStorage.setItem('sabotagem_email_status', emailSent ? 'sent' : 'failed')
       navigate('/resultado')
     } catch (err) {
       console.error(err)

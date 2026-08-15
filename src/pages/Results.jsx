@@ -37,6 +37,7 @@ export default function Results() {
   if (!user || !scores) return null
 
   const firstName = user.nome.split(' ')[0]
+  const emailSent = sessionStorage.getItem('sabotagem_email_status') === 'sent'
 
   const juizAutoMax = 15
   const juizOutrosMax = 15
@@ -74,6 +75,11 @@ export default function Results() {
           </h1>
           <p className="text-sm text-gray-500 mt-2 leading-relaxed">
             Veja abaixo os padrões que mais aparecem em você hoje.
+          </p>
+          <p className="text-sm mt-3" style={{ color: emailSent ? '#1E6F30' : '#9a6700' }}>
+            {emailSent
+              ? `Seu resultado também foi enviado para ${user.email}.`
+              : 'Não foi possível enviar o email. Seu resultado completo está disponível nesta página.'}
           </p>
         </div>
 
