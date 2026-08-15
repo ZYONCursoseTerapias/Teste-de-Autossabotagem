@@ -93,7 +93,7 @@ export default function Test() {
       }
 
       const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID || 'service_a1x68ec'
-      const adminTemplateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID
+      const adminTemplateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID || 'template_x8olkkm'
       const resultTemplateId = import.meta.env.VITE_EMAILJS_RESULT_TEMPLATE_ID || 'template_x1s01ct'
       const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY || 'Zl7xHYzIlna9G5ST3'
       let emailSent = false
@@ -125,19 +125,22 @@ export default function Test() {
         console.warn('Erro ao enviar o resultado por e-mail:', emailErr)
       }
 
-      if (adminTemplateId) {
-        try {
-          await emailjs.send(serviceId, adminTemplateId, {
-            to_name: 'Sandrä',
-            from_name: user.nome,
-            from_email: user.email,
-            client_phone: user.telefone,
-            message: `Nova cliente preencheu o Teste de Autossabotagem!\n\nNome: ${user.nome}\nE-mail: ${user.email}\nCelular: ${user.telefone}\nSabotadoras em destaque: ${primary.name} e ${secondary.name}`,
-            reply_to: user.email,
-          }, { publicKey })
-        } catch (adminEmailErr) {
-          console.warn('Erro ao enviar a notificação administrativa:', adminEmailErr)
-        }
+      try {
+        await emailjs.send(serviceId, adminTemplateId, {
+          to_name: 'Sandrä',
+          from_name: user.nome,
+          from_email: user.email,
+          client_name: user.nome,
+          client_email: user.email,
+          client_phone: user.telefone,
+          sabotador_principal: primary.name,
+          segundo_sabotador: secondary.name,
+          resultado: fullResult,
+          message: `Novo Teste de Autossabotagem concluído.\n\nCliente: ${user.nome}\nEmail: ${user.email}\nCelular: ${user.telefone}\n\n${fullResult}`,
+          reply_to: user.email,
+        }, { publicKey })
+      } catch (adminEmailErr) {
+        console.warn('Erro ao enviar a notificação administrativa:', adminEmailErr)
       }
 
       sessionStorage.setItem('sabotagem_scores', JSON.stringify(scores))
