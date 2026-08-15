@@ -1,7 +1,7 @@
 import { useState, useEffect, useLayoutEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { blocks, calcScores, getTopSaboteurs, getMaxScore, saboteurKeys } from '../data/questions'
-import { saboteurs, saboteurLabels } from '../data/saboteurs'
+import { saboteurs, juizInfo, saboteurLabels } from '../data/saboteurs'
 import { saveResult } from '../lib/supabase'
 import emailjs from '@emailjs/browser'
 
