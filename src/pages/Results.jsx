@@ -4,7 +4,7 @@ import { saboteurs, juizInfo, saboteurLabels } from '../data/saboteurs'
 import { saboteurKeys, getMaxScore } from '../data/questions'
 
 const whatsappNumber = import.meta.env.VITE_WHATSAPP_NUMBER?.replace(/\D/g, '') || '5511957947776'
-const whatsappMessage = encodeURIComponent('Olá, Sandrä. Concluí o Teste de Autossabotagem e gostaria de agendar um Atendimento para Análise dos Sabotadores.')
+const whatsappMessage = encodeURIComponent('Olá, Sandrä. Fiz o Teste de Autossabotagem e quero agendar meu Atendimento de Análise dos Sabotadores.')
 const whatsappLink = `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`
 
 function ScoreBar({ pct, color = '#6CC24A', height = 8 }) {
@@ -209,10 +209,10 @@ export default function Results() {
         {/* ===== CTA ===== */}
         <div className="rounded-2xl p-6 text-center shadow-md mt-8 fade-in" style={{ background: 'linear-gradient(135deg, #1E6F30, #6CC24A)' }}>
           <p className="playfair text-xl font-semibold text-white mb-3">
-            Atendimento para Análise dos Sabotadores
+            Quer conhecer o seu Mapa de Autossabotagem?
           </p>
           <p className="text-sm text-white opacity-80 mb-5 leading-relaxed">
-            Atendimento individual para analisar o resultado do seu teste, identificar seus principais sabotadores e compreender como esses padrões podem estar interferindo em diferentes áreas da sua vida.
+            No Atendimento de Análise dos Sabotadores, você identifica e compreende como esses padrões podem interferir em diferentes áreas da sua vida.
           </p>
           <a
             href={whatsappLink}
@@ -221,7 +221,7 @@ export default function Results() {
             className="inline-block px-8 py-3.5 rounded-2xl font-bold text-sm shadow-md transition-all hover:opacity-90 active:scale-95"
             style={{ background: '#EFBE7D', color: '#1E6F30' }}
           >
-            Solicitar atendimento
+            Quero Agendar meu Atendimento de Análise dos Sabotadores
           </a>
         </div>
 

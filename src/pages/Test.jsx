@@ -7,10 +7,10 @@ import emailjs from '@emailjs/browser'
 
 const LABELS = ['Discordo totalmente', 'Discordo', 'Neutro', 'Concordo', 'Concordo totalmente']
 const WHATSAPP_NUMBER = import.meta.env.VITE_WHATSAPP_NUMBER?.replace(/\D/g, '') || '5511957947776'
-const WHATSAPP_MESSAGE = encodeURIComponent('Olá, Sandrä. Concluí o Teste de Autossabotagem e gostaria de agendar um Atendimento para Análise dos Sabotadores.')
+const WHATSAPP_MESSAGE = encodeURIComponent('Olá, Sandrä. Fiz o Teste de Autossabotagem e quero agendar meu Atendimento de Análise dos Sabotadores.')
 const WHATSAPP_LINK = `https://wa.me/${WHATSAPP_NUMBER}?text=${WHATSAPP_MESSAGE}`
-const SERVICE_TITLE = 'Atendimento para Análise dos Sabotadores'
-const SERVICE_DESCRIPTION = 'Atendimento individual para analisar o resultado do seu teste, identificar seus principais sabotadores e compreender como esses padrões podem estar interferindo em diferentes áreas da sua vida.'
+const SERVICE_TITLE = 'Quer conhecer o seu Mapa de Autossabotagem?'
+const SERVICE_DESCRIPTION = 'No Atendimento de Análise dos Sabotadores, você identifica e compreende como esses padrões podem interferir em diferentes áreas da sua vida.'
 
 export default function Test() {
   const navigate = useNavigate()
