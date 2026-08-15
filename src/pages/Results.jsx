@@ -161,12 +161,12 @@ export default function Results() {
           </div>
         </div>
 
-        {/* ===== TOP 2 DETALHADOS ===== */}
+        {/* ===== SABOTADORA PRINCIPAL DETALHADA ===== */}
         <p className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: '#1E6F30' }}>
-          Seus sabotadores em destaque
+          Sua sabotadora em destaque
         </p>
 
-        {top.map((key, i) => {
+        {top.slice(0, 1).map((key) => {
           const info = saboteurs[key]
           const pct = Math.round((scores[key] / getMaxScore(key)) * 100)
           return (
@@ -175,7 +175,7 @@ export default function Results() {
                 <div>
                   <div>
                     <p className="text-xs font-bold uppercase tracking-widest mb-0.5" style={{ color: '#6CC24A' }}>
-                      {i === 0 ? 'Principal sabotadora' : 'Segunda sabotadora'}
+                      Principal sabotadora
                     </p>
                     <h3 className="playfair text-xl font-semibold" style={{ color: '#1E6F30' }}>{info.name}</h3>
                   </div>

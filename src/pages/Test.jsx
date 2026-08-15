@@ -68,7 +68,6 @@ export default function Test() {
         .sort((a, b) => b.pct - a.pct)
 
       const primary = saboteurs[topSaboteurs[0]]
-      const secondary = saboteurs[topSaboteurs[1]]
       const scoresSummary = rankedSaboteurs
         .map(item => `${item.name}: ${item.pct}%`)
         .join('\n')
@@ -78,17 +77,17 @@ export default function Test() {
         `Crítica às circunstâncias: ${Math.round((scores.juiz_circ / 10) * 100)}%`,
       ].join('\n')
       const fullResult = [
-        `Sabotadora principal: ${primary.name}`,
+        'Sabotador Universal: O Juiz',
+        juizInfo.description,
+        '',
+        'Como o Juiz age em você:',
+        judgeSummary,
+        '',
+        `Principal sabotadora: ${primary.name}`,
         primary.description,
         '',
-        `Segunda sabotadora: ${secondary.name}`,
-        secondary.description,
-        '',
-        'Pontuações:',
+        'Seus 9 Sabotadores Cúmplices:',
         scoresSummary,
-        '',
-        'Como o Juiz aparece:',
-        judgeSummary,
         '',
         SERVICE_TITLE,
         SERVICE_DESCRIPTION,
@@ -120,9 +119,8 @@ export default function Test() {
           client_phone: user.telefone,
           phone: user.telefone,
           sabotador_principal: primary.name,
-          segundo_sabotador: secondary.name,
+          juiz_descricao: juizInfo.description,
           descricao_principal: primary.description,
-          descricao_secundaria: secondary.description,
           pontuacoes: scoresSummary,
           juiz: judgeSummary,
           resultado: fullResult,
@@ -147,7 +145,7 @@ export default function Test() {
           client_email: user.email,
           client_phone: user.telefone,
           sabotador_principal: primary.name,
-          segundo_sabotador: secondary.name,
+          juiz_descricao: juizInfo.description,
           resultado: fullResult,
           atendimento_titulo: SERVICE_TITLE,
           atendimento_descricao: SERVICE_DESCRIPTION,
