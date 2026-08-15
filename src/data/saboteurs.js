@@ -110,10 +110,10 @@ export const saboteurs = {
 }
 
 export const juizInfo = {
-  name: 'O Juiz',
+  name: 'O Crítico',
   emoji: '⚖️',
   tagline: 'O sabotador mestre. Presente em todas nós, em maior ou menor grau.',
-  description: 'O Juiz é o sabotador universal — ele age em todas as pessoas sem exceção. Sua função é encontrar defeitos: em você mesma, nos outros e nas circunstâncias da vida. Ele é a origem da maior parte da nossa ansiedade, culpa, vergonha e sofrimento. Os outros sabotadores são os cúmplices que ele ativa para realizar essa sabotagem.',
+  description: 'O Crítico é o sabotador comum a todas as pessoas. Ele direciona a atenção para defeitos em você mesma, nos outros e nas circunstâncias da vida. Sua atuação pode intensificar sentimentos de ansiedade, culpa, vergonha e sofrimento. Os outros sabotadores funcionam como cúmplices e reforçam esses padrões de autossabotagem.',
   modes: {
     juiz_auto: {
       label: 'Julga a si mesma',

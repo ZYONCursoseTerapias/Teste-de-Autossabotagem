@@ -83,12 +83,12 @@ export default function Results() {
           </p>
         </div>
 
-        {/* ===== O JUIZ ===== */}
+        {/* ===== O CRÍTICO ===== */}
         <div className="rounded-2xl overflow-hidden shadow-md mb-6 fade-in" style={{ background: '#1E6F30' }}>
           <div className="px-6 py-5 border-b border-white border-opacity-20">
             <div>
               <div>
-                <p className="text-xs font-bold uppercase tracking-widest text-white opacity-60 mb-0.5">Sabotador Universal</p>
+                <p className="text-xs font-bold uppercase tracking-widest text-white opacity-60 mb-0.5">Sabotador comum a todas as pessoas</p>
                 <h2 className="text-xl font-semibold text-white playfair">{juizInfo.name}</h2>
               </div>
             </div>
@@ -98,7 +98,7 @@ export default function Results() {
             <p className="text-sm text-white opacity-80 leading-relaxed mb-6">{juizInfo.description}</p>
 
             <p className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: '#9BE198' }}>
-              Como o Juiz age em você
+              Como o Crítico age em você
             </p>
 
             {[
