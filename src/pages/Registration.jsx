@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 
 export default function Registration() {
   const navigate = useNavigate()
-  const [form, setForm] = useState({ nome: '', email: '', pais: '55', ddd: '', celular: '', consentimento: false })
+  const [form, setForm] = useState({ nome: '', email: '', pais: '55', ddd: '', celular: '' })
   const [errors, setErrors] = useState({})
 
   function validate() {
@@ -13,7 +13,6 @@ export default function Registration() {
     if (!/^\d{1,3}$/.test(form.pais)) e.pais = 'Informe o código do país.'
     if (!/^\d{2,3}$/.test(form.ddd)) e.ddd = 'Informe o código da cidade.'
     if (!/^\d{8,9}$/.test(form.celular)) e.celular = 'Informe um número de celular válido.'
-    if (!form.consentimento) e.consentimento = 'Confirme a autorização para gerar e enviar seu resultado.'
     return e
   }
 
@@ -114,20 +113,6 @@ export default function Registration() {
               {(errors.pais || errors.ddd || errors.celular) && (
                 <p className="text-xs text-red-500 mt-1">{errors.pais || errors.ddd || errors.celular}</p>
               )}
-            </div>
-
-            <div className="mb-6">
-              <label className="flex items-start gap-3 text-sm text-gray-600 leading-relaxed cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={form.consentimento}
-                  onChange={e => setForm({ ...form, consentimento: e.target.checked })}
-                  className="mt-1 h-4 w-4"
-                  style={{ accentColor: '#1E6F30' }}
-                />
-                <span>Autorizo o uso das informações fornecidas para calcular, armazenar e enviar meu resultado.</span>
-              </label>
-              {errors.consentimento && <p className="text-xs text-red-500 mt-1">{errors.consentimento}</p>}
             </div>
 
             <button
