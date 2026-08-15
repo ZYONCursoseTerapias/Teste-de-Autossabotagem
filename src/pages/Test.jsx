@@ -104,7 +104,7 @@ export default function Test() {
 
       const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID || 'service_a1x68ec'
       const adminTemplateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID || 'template_u7dvf9b'
-      const resultTemplateId = import.meta.env.VITE_EMAILJS_RESULT_TEMPLATE_ID || 'template_a2n6s9d'
+      const resultTemplateId = import.meta.env.VITE_EMAILJS_RESULT_TEMPLATE_ID || 'template_rm9d1le'
       const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY || 'Zl7xHYzIlna9G5ST3'
       let emailSent = false
 
