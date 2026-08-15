@@ -68,6 +68,8 @@ export default function Test() {
         .sort((a, b) => b.pct - a.pct)
 
       const primary = saboteurs[topSaboteurs[0]]
+      const second = saboteurs[topSaboteurs[1]]
+      const third = saboteurs[topSaboteurs[2]]
       const scoresSummary = rankedSaboteurs
         .map(item => `${item.name}: ${item.pct}%`)
         .join('\n')
@@ -117,8 +119,14 @@ export default function Test() {
           user_name: user.nome,
           client_email: user.email,
           client_phone: user.telefone,
+          telefone: user.telefone,
           phone: user.telefone,
+          date: new Date().toLocaleString('pt-BR'),
           sabotador_principal: primary.name,
+          dominant_trait: primary.name,
+          second_name: second.name,
+          third_name: third.name,
+          full_detail: scoresSummary,
           critico_nome: juizInfo.name,
           critico_descricao: juizInfo.description,
           critico_resultado: judgeSummary,
@@ -148,7 +156,13 @@ export default function Test() {
           client_name: user.nome,
           client_email: user.email,
           client_phone: user.telefone,
+          telefone: user.telefone,
+          date: new Date().toLocaleString('pt-BR'),
           sabotador_principal: primary.name,
+          dominant_trait: primary.name,
+          second_name: second.name,
+          third_name: third.name,
+          full_detail: scoresSummary,
           critico_nome: juizInfo.name,
           critico_descricao: juizInfo.description,
           critico_resultado: judgeSummary,
