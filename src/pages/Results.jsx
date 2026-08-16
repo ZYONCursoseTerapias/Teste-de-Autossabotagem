@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { saboteurs, juizInfo, saboteurLabels } from '../data/saboteurs'
-import { saboteurKeys, getMaxScore } from '../data/questions'
+import { saboteurs, juizInfo } from '../data/saboteurs'
+import { buildFullResult, formatScore } from '../lib/result'
 import emailjs from '@emailjs/browser'
 
 const whatsappNumber = import.meta.env.VITE_WHATSAPP_NUMBER?.replace(/\D/g, '') || '5511957947776'
@@ -41,44 +41,14 @@ export default function Results() {
   const firstName = user.nome.split(' ')[0]
   const emailSent = sessionStorage.getItem('sabotagem_email_status') === 'sent'
 
-  const juizAutoMax = 15
-  const juizOutrosMax = 15
-  const juizCircMax = 10
-
-  const juizAutoPct = Math.round((scores.juiz_auto / juizAutoMax) * 100)
-  const juizOutrosPct = Math.round((scores.juiz_outros / juizOutrosMax) * 100)
-  const juizCircPct = Math.round((scores.juiz_circ / juizCircMax) * 100)
-
-  const rankedSaboteurs = saboteurKeys
-    .map(k => ({ key: k, pct: Math.round((scores[k] / getMaxScore(k)) * 100) }))
-    .sort((a, b) => b.pct - a.pct)
+  const result = buildFullResult(scores)
+  const rankedSaboteurs = result.ranked
 
   async function resendRealResult() {
     setResendStatus('sending')
-    const primary = saboteurs[top[0]]
-    const second = saboteurs[top[1]]
-    const third = saboteurs[top[2]]
-    const scoresSummary = rankedSaboteurs
-      .map(item => `${saboteurLabels[item.key]}: ${item.pct}%`)
-      .join('\n')
-    const criticSummary = [
-      `Autocrítica: ${juizAutoPct}%`,
-      `Crítica aos outros: ${juizOutrosPct}%`,
-      `Crítica às circunstâncias: ${juizCircPct}%`,
-    ].join('\n')
-    const fullResult = [
-      'Sabotador comum a todas as pessoas: O Crítico',
-      juizInfo.description,
-      '',
-      'Como o Crítico age em você:',
-      criticSummary,
-      '',
-      `Principal sabotadora: ${primary.name}`,
-      primary.description,
-      '',
-      'Seus 9 Sabotadores Cúmplices:',
-      scoresSummary,
-    ].join('\n')
+    const primary = result.primary
+    const second = saboteurs[rankedSaboteurs[1].key]
+    const third = saboteurs[rankedSaboteurs[2].key]
     const commonParams = {
       to_name: user.nome,
       to_email: user.email,
@@ -96,14 +66,14 @@ export default function Results() {
       dominant_trait: primary.name,
       second_name: second.name,
       third_name: third.name,
-      full_detail: fullResult,
+      full_detail: result.fullResult,
       critico_nome: juizInfo.name,
       critico_descricao: juizInfo.description,
-      critico_resultado: criticSummary,
+      critico_resultado: result.criticSummary,
       descricao_principal: primary.description,
-      pontuacoes: scoresSummary,
-      resultado: fullResult,
-      message: fullResult,
+      pontuacoes: result.scoresSummary,
+      resultado: result.fullResult,
+      message: result.fullResult,
       atendimento_link: whatsappLink,
       whatsapp_link: whatsappLink,
       reply_to: user.email,
@@ -183,24 +153,26 @@ export default function Results() {
           <div className="px-6 py-5 border-b border-white border-opacity-20">
             <div>
               <div>
-                <p className="text-xs font-bold uppercase tracking-widest text-white opacity-60 mb-0.5">Sabotador comum a todas as pessoas</p>
+                <p className="text-xs font-bold uppercase tracking-widest text-white opacity-60 mb-0.5">Sabotadora comum a todas as pessoas</p>
                 <h2 className="text-xl font-semibold text-white playfair">{juizInfo.name}</h2>
               </div>
             </div>
           </div>
 
           <div className="px-6 py-5">
-            <p className="text-sm text-white opacity-80 leading-relaxed mb-6">{juizInfo.description}</p>
+            <p className="text-sm text-white opacity-80 leading-relaxed mb-4">{juizInfo.description}</p>
+            <p className="text-sm text-white opacity-80 leading-relaxed mb-4">{juizInfo.operation}</p>
+            <ul className="space-y-1 list-disc pl-5 mb-4">
+              {juizInfo.lies.map((lie) => <li key={lie} className="text-sm text-white opacity-80">“{lie}”</li>)}
+            </ul>
+            <p className="text-sm text-white opacity-80 leading-relaxed mb-4">{juizInfo.outcome}</p>
+            <p className="text-sm text-white opacity-80 leading-relaxed mb-6">{juizInfo.takeover}</p>
 
             <p className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: '#9BE198' }}>
               Como o Crítico age em você
             </p>
 
-            {[
-              { key: 'juiz_auto', pct: juizAutoPct },
-              { key: 'juiz_outros', pct: juizOutrosPct },
-              { key: 'juiz_circ', pct: juizCircPct },
-            ].map(({ key, pct }) => {
+            {result.criticModes.map(({ key, score, max, pct }) => {
               const mode = juizInfo.modes[key]
               const { label } = intensityLabel(pct)
               return (
@@ -209,7 +181,7 @@ export default function Results() {
                     <span className="text-sm text-white font-medium">{mode.label}</span>
                     <span className="text-xs font-bold px-2 py-0.5 rounded-full"
                       style={{ background: '#EFBE7D', color: '#1E6F30' }}>
-                      {label}
+                      {label} · {score} de {max}
                     </span>
                   </div>
                   <ScoreBar pct={pct} color="#EFBE7D" height={8} />
@@ -227,7 +199,7 @@ export default function Results() {
           </p>
 
           <div className="rounded-2xl overflow-hidden shadow-sm" style={{ background: 'white' }}>
-            {rankedSaboteurs.map(({ key, pct }, idx) => {
+            {rankedSaboteurs.map(({ key, score, pct }) => {
               const info = saboteurs[key]
               const { label, color } = intensityLabel(pct)
               const isTop = top.includes(key)
@@ -245,7 +217,7 @@ export default function Results() {
                           {isTop && <span className="ml-2 text-xs px-2 py-0.5 rounded-full font-bold"
                             style={{ background: '#1E6F30', color: 'white' }}>Em destaque</span>}
                         </span>
-                        <span className="text-xs font-bold" style={{ color }}>{label}</span>
+                        <span className="text-xs font-bold" style={{ color }}>{label} · {formatScore(score)} de 10</span>
                       </div>
                     </div>
                   </div>
@@ -263,7 +235,8 @@ export default function Results() {
 
         {top.slice(0, 1).map((key) => {
           const info = saboteurs[key]
-          const pct = Math.round((scores[key] / getMaxScore(key)) * 100)
+          const primaryScore = rankedSaboteurs.find(item => item.key === key)
+          const pct = primaryScore?.pct || 0
           return (
             <div key={key} className="rounded-2xl overflow-hidden shadow-sm mb-4 fade-in" style={{ background: 'white', border: '2px solid #9BE198' }}>
               <div className="px-6 py-5 border-b" style={{ borderColor: '#9BE198', background: '#f0faf0' }}>
@@ -278,21 +251,29 @@ export default function Results() {
               </div>
 
               <div className="px-6 py-5">
-                <p className="text-sm text-gray-600 leading-relaxed mb-5">{info.description}</p>
-
-                <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: '#1E6F30' }}>
-                  Como isso aparece em você
-                </p>
-                <ul className="space-y-2 list-disc pl-5">
-                  {info.signs.map((sign, idx) => (
-                    <li key={idx} className="text-sm text-gray-600 pl-1">{sign}</li>
-                  ))}
-                </ul>
+                {[
+                  ['Como ela nasce', info.origin],
+                  ['Como ela funciona', info.operation],
+                  ['A mentira que ela conta', null],
+                  ['O resultado', info.outcome],
+                  [`Quando a ${info.name} assume o controle`, info.takeover],
+                ].map(([title, content]) => (
+                  <section key={title} className="mb-5 last:mb-0">
+                    <h4 className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: '#1E6F30' }}>{title}</h4>
+                    {content ? (
+                      <p className="text-sm text-gray-600 leading-relaxed">{content}</p>
+                    ) : (
+                      <ul className="space-y-2 list-disc pl-5">
+                        {info.lies.map((lie) => <li key={lie} className="text-sm text-gray-600 pl-1">“{lie}”</li>)}
+                      </ul>
+                    )}
+                  </section>
+                ))}
 
                 <div className="mt-5 pt-4 border-t" style={{ borderColor: '#e5e7eb' }}>
                   <div className="flex justify-between items-center mb-1.5">
                     <span className="text-xs text-gray-500">Intensidade</span>
-                    <span className="text-xs font-bold" style={{ color: '#1E6F30' }}>{pct}%</span>
+                    <span className="text-xs font-bold" style={{ color: '#1E6F30' }}>{formatScore(primaryScore?.score || 0)} de 10</span>
                   </div>
                   <ScoreBar pct={pct} color="#1E6F30" height={8} />
                 </div>
