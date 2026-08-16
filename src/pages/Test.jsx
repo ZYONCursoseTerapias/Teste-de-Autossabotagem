@@ -1,11 +1,12 @@
 import { useState, useEffect, useLayoutEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { blocks, calcScores, getTopSaboteurs, getMaxScore, saboteurKeys } from '../data/questions'
-import { saboteurs, juizInfo, saboteurLabels } from '../data/saboteurs'
+import { blocks, calcScores } from '../data/questions'
+import { saboteurs, juizInfo } from '../data/saboteurs'
 import { saveResult } from '../lib/supabase'
+import { buildFullResult } from '../lib/result'
 import emailjs from '@emailjs/browser'
 
-const LABELS = ['Discordo totalmente', 'Discordo', 'Neutro', 'Concordo', 'Concordo totalmente']
+const LABELS = ['Discordo fortemente', 'Discordo', 'Neutro', 'Concordo', 'Concordo fortemente']
 const WHATSAPP_NUMBER = import.meta.env.VITE_WHATSAPP_NUMBER?.replace(/\D/g, '') || '5511957947776'
 const WHATSAPP_MESSAGE = encodeURIComponent('Olá, Sandrä. Fiz o Teste de Autossabotagem e quero agendar meu Atendimento de Análise dos Sabotadores.')
 const WHATSAPP_LINK = `https://wa.me/${WHATSAPP_NUMBER}?text=${WHATSAPP_MESSAGE}`
@@ -58,38 +59,13 @@ export default function Test() {
     setSaving(true)
     try {
       const scores = calcScores(answers)
-      const topSaboteurs = getTopSaboteurs(scores)
-      const rankedSaboteurs = saboteurKeys
-        .map(key => ({
-          key,
-          name: saboteurLabels[key],
-          pct: Math.round((scores[key] / getMaxScore(key)) * 100),
-        }))
-        .sort((a, b) => b.pct - a.pct)
-
-      const primary = saboteurs[topSaboteurs[0]]
-      const second = saboteurs[topSaboteurs[1]]
-      const third = saboteurs[topSaboteurs[2]]
-      const scoresSummary = rankedSaboteurs
-        .map(item => `${item.name}: ${item.pct}%`)
-        .join('\n')
-      const judgeSummary = [
-        `Autocrítica: ${Math.round((scores.juiz_auto / 15) * 100)}%`,
-        `Crítica aos outros: ${Math.round((scores.juiz_outros / 15) * 100)}%`,
-        `Crítica às circunstâncias: ${Math.round((scores.juiz_circ / 10) * 100)}%`,
-      ].join('\n')
+      const result = buildFullResult(scores)
+      const topSaboteurs = result.ranked.slice(0, 2).map(item => item.key)
+      const primary = result.primary
+      const second = saboteurs[result.ranked[1].key]
+      const third = saboteurs[result.ranked[2].key]
       const fullResult = [
-        'Sabotador comum a todas as pessoas: O Crítico',
-        juizInfo.description,
-        '',
-        'Como o Crítico age em você:',
-        judgeSummary,
-        '',
-        `Principal sabotadora: ${primary.name}`,
-        primary.description,
-        '',
-        'Seus 9 Sabotadores Cúmplices:',
-        scoresSummary,
+        result.fullResult,
         '',
         SERVICE_TITLE,
         SERVICE_DESCRIPTION,
@@ -129,12 +105,12 @@ export default function Test() {
           full_detail: fullResult,
           critico_nome: juizInfo.name,
           critico_descricao: juizInfo.description,
-          critico_resultado: judgeSummary,
+          critico_resultado: result.criticSummary,
           juiz_nome: juizInfo.name,
           juiz_descricao: juizInfo.description,
           descricao_principal: primary.description,
-          pontuacoes: scoresSummary,
-          juiz: judgeSummary,
+          pontuacoes: result.scoresSummary,
+          juiz: result.criticSummary,
           resultado: fullResult,
           message: fullResult,
           atendimento_titulo: SERVICE_TITLE,
@@ -165,7 +141,7 @@ export default function Test() {
           full_detail: fullResult,
           critico_nome: juizInfo.name,
           critico_descricao: juizInfo.description,
-          critico_resultado: judgeSummary,
+          critico_resultado: result.criticSummary,
           juiz_nome: juizInfo.name,
           juiz_descricao: juizInfo.description,
           resultado: fullResult,

@@ -16,13 +16,3 @@ export async function saveResult({ nome, email, telefone, answers, scores, topSa
   if (error) throw error
   return { saved: true }
 }
-
-export async function getAllResults() {
-  if (!supabase) return []
-  const { data, error } = await supabase
-    .from('sabotagem_results')
-    .select('*')
-    .order('created_at', { ascending: false })
-  if (error) throw error
-  return data
-}

@@ -122,10 +122,22 @@ export function getMaxScore(key) {
   return count * 5
 }
 
+export function getRelativeScore(key, scores) {
+  const count = getMaxScore(key) / 5
+  if (!count) return 0
+  return Math.round(((scores[key] || 0) / count) * 20) / 10
+}
+
+export function getScorePercentage(key, scores) {
+  const max = getMaxScore(key)
+  if (!max) return 0
+  return Math.round(((scores[key] || 0) / max) * 100)
+}
+
 export function getTopSaboteurs(scores) {
   return saboteurKeys
-    .map(k => ({ key: k, pct: scores[k] / getMaxScore(k) }))
-    .sort((a, b) => b.pct - a.pct)
+    .map(k => ({ key: k, score: getRelativeScore(k, scores) }))
+    .sort((a, b) => b.score - a.score)
     .slice(0, 2)
     .map(s => s.key)
 }
