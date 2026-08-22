@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom'
 import { blocks, calcScores, getTopSaboteurs, getMaxScore, saboteurKeys } from '../data/questions'
 import { saboteurs, juizInfo, saboteurLabels } from '../data/saboteurs'
 import { saveResult } from '../lib/supabase'
-import emailjs from '@emailjs/browser'
 
 const LABELS = ['Discordo totalmente', 'Discordo', 'Neutro', 'Concordo', 'Concordo totalmente']
 const WHATSAPP_NUMBER = import.meta.env.VITE_WHATSAPP_NUMBER?.replace(/\D/g, '') || '5511957947776'
@@ -11,6 +10,36 @@ const WHATSAPP_MESSAGE = encodeURIComponent('Olá, Sandrä. Fiz o Teste de Autos
 const WHATSAPP_LINK = `https://wa.me/${WHATSAPP_NUMBER}?text=${WHATSAPP_MESSAGE}`
 const SERVICE_TITLE = 'Quer conhecer o seu Mapa de Autossabotagem?'
 const SERVICE_DESCRIPTION = 'No Atendimento de Análise dos Sabotadores, você identifica e compreende como esses padrões podem interferir em diferentes áreas da sua vida.'
+
+const EMAILJS_SERVICE_ID = 'service_a1x68ec'
+const EMAILJS_RESULT_TEMPLATE_ID = 'template_rm9d1le'
+const EMAILJS_ADMIN_TEMPLATE_ID = 'template_u7dvf9b'
+const EMAILJS_PUBLIC_KEY = 'Zl7xHYzIlna9G5ST3'
+
+async function sendEmail(templateId, templateParams) {
+  const response = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      service_id: EMAILJS_SERVICE_ID,
+      template_id: templateId,
+      user_id: EMAILJS_PUBLIC_KEY,
+      template_params: templateParams,
+    }),
+  })
+
+  if (!response.ok) {
+    const text = await response.text()
+    const error = new Error(text || 'Falha no envio pelo EmailJS')
+    error.status = response.status
+    error.text = text
+    throw error
+  }
+}
+
+function wait(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms))
+}
 
 async function reportEmailError(scope, error) {
   try {
@@ -118,14 +147,10 @@ export default function Test() {
         console.warn('Não foi possível salvar o resultado no Supabase:', saveErr)
       }
 
-      const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID || 'service_a1x68ec'
-      const adminTemplateId = 'template_u7dvf9b'
-      const resultTemplateId = 'template_rm9d1le'
-      const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY || 'Zl7xHYzIlna9G5ST3'
       let emailSent = false
 
       try {
-        await emailjs.send(serviceId, resultTemplateId, {
+        await sendEmail(EMAILJS_RESULT_TEMPLATE_ID, {
           to_name: user.nome,
           to_email: user.email,
           email: user.email,
@@ -158,15 +183,17 @@ export default function Test() {
           atendimento_link: WHATSAPP_LINK,
           whatsapp_link: WHATSAPP_LINK,
           reply_to: user.email,
-        }, { publicKey })
+        })
         emailSent = true
       } catch (emailErr) {
         console.warn('Erro ao enviar o resultado por e-mail:', emailErr)
         await reportEmailError('resultado_cliente', emailErr)
       }
 
+      await wait(1100)
+
       try {
-        await emailjs.send(serviceId, adminTemplateId, {
+        await sendEmail(EMAILJS_ADMIN_TEMPLATE_ID, {
           to_name: 'Sandrä',
           from_name: user.nome,
           from_email: user.email,
@@ -192,7 +219,7 @@ export default function Test() {
           whatsapp_link: WHATSAPP_LINK,
           message: `Novo Teste de Autossabotagem concluído.\n\nCliente: ${user.nome}\nEmail: ${user.email}\nCelular: ${user.telefone}\n\n${fullResult}`,
           reply_to: user.email,
-        }, { publicKey })
+        })
       } catch (adminEmailErr) {
         console.warn('Erro ao enviar a notificação administrativa:', adminEmailErr)
         await reportEmailError('notificacao_administrativa', adminEmailErr)
