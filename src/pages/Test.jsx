@@ -1,5 +1,6 @@
 import { useState, useEffect, useLayoutEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import emailjs from '@emailjs/browser'
 import { blocks, calcScores, getTopSaboteurs, getMaxScore, saboteurKeys } from '../data/questions'
 import { saboteurs, juizInfo, saboteurLabels } from '../data/saboteurs'
 import { saveResult } from '../lib/supabase'
@@ -17,28 +18,12 @@ const EMAILJS_ADMIN_TEMPLATE_ID = 'template_u7dvf9b'
 const EMAILJS_PUBLIC_KEY = 'Zl7xHYzIlna9G5ST3'
 
 async function sendEmail(templateId, templateParams) {
-  const response = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      service_id: EMAILJS_SERVICE_ID,
-      template_id: templateId,
-      user_id: EMAILJS_PUBLIC_KEY,
-      template_params: templateParams,
-    }),
-  })
-
-  if (!response.ok) {
-    const text = await response.text()
-    const error = new Error(text || 'Falha no envio pelo EmailJS')
-    error.status = response.status
-    error.text = text
-    throw error
-  }
-}
-
-function wait(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms))
+  return emailjs.send(
+    EMAILJS_SERVICE_ID,
+    templateId,
+    templateParams,
+    { publicKey: EMAILJS_PUBLIC_KEY },
+  )
 }
 
 async function reportEmailError(scope, error) {
@@ -190,7 +175,6 @@ export default function Test() {
         await reportEmailError('resultado_cliente', emailErr)
       }
 
-      await wait(1100)
 
       try {
         await sendEmail(EMAILJS_ADMIN_TEMPLATE_ID, {
