@@ -180,6 +180,8 @@ export default function Test() {
       try {
         await sendEmail(EMAILJS_ADMIN_TEMPLATE_ID, {
           to_name: 'Sandrä',
+          name: user.nome,
+          email: user.email,
           from_name: user.nome,
           from_email: user.email,
           client_name: user.nome,
