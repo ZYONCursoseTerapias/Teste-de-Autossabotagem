@@ -171,7 +171,7 @@ export default function Test() {
         })
         emailSent = true
       } catch (emailErr) {
-        console.warn('Erro ao enviar o resultado por e-mail:', emailErr)
+        console.warn('Erro ao enviar o resultado por email:', emailErr)
         await reportEmailError('resultado_cliente', emailErr)
       }
 
