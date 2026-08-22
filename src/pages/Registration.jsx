@@ -9,7 +9,7 @@ export default function Registration() {
   function validate() {
     const e = {}
     if (!form.nome.trim()) e.nome = 'Por favor, informe seu nome.'
-    if (!form.email.trim() || !/\S+@\S+\.\S+/.test(form.email)) e.email = 'Por favor, informe um e-mail válido.'
+    if (!form.email.trim() || !/\S+@\S+\.\S+/.test(form.email)) e.email = 'Por favor, informe um email válido.'
     if (!/^\d{1,3}$/.test(form.pais)) e.pais = 'Informe o código do país.'
     if (!/^\d{2,3}$/.test(form.ddd)) e.ddd = 'Informe o código da cidade.'
     if (!/^\d{8,9}$/.test(form.celular)) e.celular = 'Informe um número de celular válido.'
@@ -38,7 +38,7 @@ export default function Registration() {
 
           <div className="text-center mb-8">
             <h2 className="playfair text-3xl font-semibold mb-2" style={{ color: '#1E6F30' }}>Antes de começar</h2>
-            <p className="text-sm text-gray-500">Seus resultados serão enviados para o seu e-mail.</p>
+            <p className="text-sm text-gray-500">Seus resultados serão enviados para o seu email.</p>
           </div>
 
           <form onSubmit={handleSubmit} className="rounded-2xl p-8 shadow-sm" style={{ background: 'white' }}>
@@ -60,7 +60,7 @@ export default function Registration() {
 
             <div className="mb-5">
               <label className="block text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: '#1E6F30' }}>
-                E-mail
+                Email
               </label>
               <input
                 type="email"
