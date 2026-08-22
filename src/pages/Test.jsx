@@ -13,8 +13,8 @@ const SERVICE_TITLE = 'Quer conhecer o seu Mapa de Autossabotagem?'
 const SERVICE_DESCRIPTION = 'No Atendimento de Análise dos Sabotadores, você identifica e compreende como esses padrões podem interferir em diferentes áreas da sua vida.'
 
 const EMAILJS_SERVICE_ID = 'service_a1x68ec'
-const EMAILJS_RESULT_TEMPLATE_ID = 'template_yj9r0vk'
-const EMAILJS_ADMIN_TEMPLATE_ID = 'template_rd0wcsc'
+const EMAILJS_RESULT_TEMPLATE_ID = 'template_mmrzxfx'
+const EMAILJS_ADMIN_TEMPLATE_ID = 'template_wnedyye'
 const EMAILJS_PUBLIC_KEY = 'Zl7xHYzIlna9G5ST3'
 
 async function sendEmail(templateId, templateParams) {
