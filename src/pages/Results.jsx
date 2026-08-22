@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { saboteurs, juizInfo, saboteurLabels } from '../data/saboteurs'
 import { saboteurKeys, getMaxScore } from '../data/questions'
-import emailjs from '@emailjs/browser'
 
 const whatsappNumber = import.meta.env.VITE_WHATSAPP_NUMBER?.replace(/\D/g, '') || '5511957947776'
 const whatsappMessage = encodeURIComponent('Olá, Sandrä. Fiz o Teste de Autossabotagem e quero agendar meu Atendimento de Análise dos Sabotadores.')
@@ -24,7 +23,6 @@ export default function Results() {
   const [user, setUser] = useState(null)
   const [scores, setScores] = useState(null)
   const [top, setTop] = useState([])
-  const [resendStatus, setResendStatus] = useState('idle')
 
   useEffect(() => {
     const u = sessionStorage.getItem('sabotagem_user')
@@ -52,82 +50,6 @@ export default function Results() {
   const rankedSaboteurs = saboteurKeys
     .map(k => ({ key: k, pct: Math.round((scores[k] / getMaxScore(k)) * 100) }))
     .sort((a, b) => b.pct - a.pct)
-
-  async function resendRealResult() {
-    setResendStatus('sending')
-    const primary = saboteurs[top[0]]
-    const second = saboteurs[top[1]]
-    const third = saboteurs[top[2]]
-    const scoresSummary = rankedSaboteurs
-      .map(item => `${saboteurLabels[item.key]}: ${item.pct}%`)
-      .join('\n')
-    const criticSummary = [
-      `Autocrítica: ${juizAutoPct}%`,
-      `Crítica aos outros: ${juizOutrosPct}%`,
-      `Crítica às circunstâncias: ${juizCircPct}%`,
-    ].join('\n')
-    const fullResult = [
-      'Sabotador comum a todas as pessoas: O Crítico',
-      juizInfo.description,
-      '',
-      'Como o Crítico age em você:',
-      criticSummary,
-      '',
-      `Principal sabotadora: ${primary.name}`,
-      primary.description,
-      '',
-      'Seus 9 Sabotadores Cúmplices:',
-      scoresSummary,
-    ].join('\n')
-    const commonParams = {
-      to_name: user.nome,
-      to_email: user.email,
-      email: user.email,
-      user_email: user.email,
-      recipient_email: user.email,
-      client_name: user.nome,
-      user_name: user.nome,
-      client_email: user.email,
-      client_phone: user.telefone,
-      telefone: user.telefone,
-      phone: user.telefone,
-      date: new Date().toLocaleString('pt-BR'),
-      sabotador_principal: primary.name,
-      dominant_trait: primary.name,
-      second_name: second.name,
-      third_name: third.name,
-      full_detail: fullResult,
-      critico_nome: juizInfo.name,
-      critico_descricao: juizInfo.description,
-      critico_resultado: criticSummary,
-      descricao_principal: primary.description,
-      pontuacoes: scoresSummary,
-      resultado: fullResult,
-      message: fullResult,
-      atendimento_link: whatsappLink,
-      whatsapp_link: whatsappLink,
-      reply_to: user.email,
-    }
-
-    try {
-      const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID || 'service_a1x68ec'
-      const resultTemplateId = 'template_a2n6s9d'
-      const adminTemplateId = 'template_x1s01ct'
-      const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY || 'Zl7xHYzIlna9G5ST3'
-      await emailjs.send(serviceId, resultTemplateId, commonParams, { publicKey })
-      await emailjs.send(serviceId, adminTemplateId, {
-        ...commonParams,
-        to_name: 'Sandrä',
-        from_name: user.nome,
-        from_email: user.email,
-      }, { publicKey })
-      sessionStorage.setItem('sabotagem_email_status', 'sent')
-      setResendStatus('sent')
-    } catch (error) {
-      console.error('Erro ao reenviar o resultado verdadeiro:', error)
-      setResendStatus('failed')
-    }
-  }
 
   function intensityLabel(pct) {
     if (pct >= 75) return { label: 'Alta', color: '#1E6F30' }
@@ -159,23 +81,6 @@ export default function Results() {
               ? `Seu resultado também foi enviado para ${user.email}.`
               : 'Não foi possível enviar o email. Seu resultado completo está disponível nesta página.'}
           </p>
-          {!emailSent && (
-            <button
-              type="button"
-              onClick={resendRealResult}
-              disabled={resendStatus === 'sending'}
-              className="mt-4 px-6 py-3 rounded-xl text-sm font-semibold text-white disabled:opacity-50"
-              style={{ background: '#1E6F30' }}
-            >
-              {resendStatus === 'sending' ? 'Enviando resultado...' : 'Enviar meu resultado verdadeiro por email'}
-            </button>
-          )}
-          {resendStatus === 'sent' && (
-            <p className="text-sm mt-3" style={{ color: '#1E6F30' }}>Seu resultado verdadeiro foi enviado aos dois emails.</p>
-          )}
-          {resendStatus === 'failed' && (
-            <p className="text-sm mt-3" style={{ color: '#9a6700' }}>O envio não foi concluído. Tente novamente.</p>
-          )}
         </div>
 
         {/* ===== O CRÍTICO ===== */}
