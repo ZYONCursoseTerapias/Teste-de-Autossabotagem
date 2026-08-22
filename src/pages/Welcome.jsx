@@ -35,7 +35,7 @@ export default function Welcome() {
         {/* Description card */}
         <div className="rounded-2xl p-6 mb-6 shadow-sm" style={{ background: '#1E6F30' }}>
           <p className="text-white text-sm leading-relaxed mb-4">
-            Todas nós temos padrões mentais que agem contra o nosso bem-estar, mesmo sem percebemos. Eles se chamam <strong>Sabotadores</strong> — e foram desenvolvidos na infância como mecanismos de proteção.
+            Todas nós temos padrões mentais que agem contra o nosso bem estar, mesmo sem percebermos. Eles se chamam <strong>Sabotadores</strong> e foram desenvolvidos na infância como mecanismos de proteção.
           </p>
           <p className="text-white text-sm leading-relaxed">
             Este teste identifica quais Sabotadores têm mais força em você hoje, revelando os padrões que mais impactam sua felicidade e seus resultados.
@@ -56,7 +56,7 @@ export default function Welcome() {
             ⚠️ Atenção antes de começar
           </p>
           <p className="text-sm text-gray-700 leading-relaxed">
-            Se você viveu alguma situação emocionalmente intensa nas últimas 24 horas — seja algo positivo ou negativo — recomendamos aguardar 48 horas antes de responder. Momentos de grande emoção podem influenciar suas respostas e alterar o resultado.
+            Se você viveu alguma situação emocionalmente intensa nas últimas 24 horas, seja algo positivo ou negativo, recomendamos aguardar 48 horas antes de responder. Momentos de grande emoção podem influenciar suas respostas e alterar o resultado.
           </p>
         </div>
 
