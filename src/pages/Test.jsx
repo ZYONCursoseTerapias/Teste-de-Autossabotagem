@@ -12,6 +12,22 @@ const WHATSAPP_LINK = `https://wa.me/${WHATSAPP_NUMBER}?text=${WHATSAPP_MESSAGE}
 const SERVICE_TITLE = 'Quer conhecer o seu Mapa de Autossabotagem?'
 const SERVICE_DESCRIPTION = 'No Atendimento de Análise dos Sabotadores, você identifica e compreende como esses padrões podem interferir em diferentes áreas da sua vida.'
 
+async function reportEmailError(scope, error) {
+  try {
+    await fetch('/api/email-error', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        scope,
+        status: error?.status ?? null,
+        text: error?.text ?? error?.message ?? String(error),
+      }),
+    })
+  } catch (reportError) {
+    console.warn('Não foi possível registrar a falha do EmailJS:', reportError)
+  }
+}
+
 export default function Test() {
   const navigate = useNavigate()
   const [user, setUser] = useState(null)
@@ -146,6 +162,7 @@ export default function Test() {
         emailSent = true
       } catch (emailErr) {
         console.warn('Erro ao enviar o resultado por e-mail:', emailErr)
+        await reportEmailError('resultado_cliente', emailErr)
       }
 
       try {
@@ -178,6 +195,7 @@ export default function Test() {
         }, { publicKey })
       } catch (adminEmailErr) {
         console.warn('Erro ao enviar a notificação administrativa:', adminEmailErr)
+        await reportEmailError('notificacao_administrativa', adminEmailErr)
       }
 
       sessionStorage.setItem('sabotagem_scores', JSON.stringify(scores))
