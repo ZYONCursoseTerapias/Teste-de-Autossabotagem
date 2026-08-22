@@ -111,8 +111,8 @@ export default function Results() {
 
     try {
       const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID || 'service_a1x68ec'
-      const resultTemplateId = import.meta.env.VITE_EMAILJS_RESULT_TEMPLATE_ID || 'template_rm9d1le'
-      const adminTemplateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID || 'template_u7dvf9b'
+      const resultTemplateId = import.meta.env.VITE_EMAILJS_RESULT_TEMPLATE_ID || 'template_a2n6s9d'
+      const adminTemplateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID || 'template_x1s01ct'
       const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY || 'Zl7xHYzIlna9G5ST3'
       await emailjs.send(serviceId, resultTemplateId, commonParams, { publicKey })
       await emailjs.send(serviceId, adminTemplateId, {
