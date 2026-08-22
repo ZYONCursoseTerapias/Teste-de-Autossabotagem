@@ -98,9 +98,9 @@ export default function Test() {
         }))
         .sort((a, b) => b.pct - a.pct)
 
-      const primary = saboteurs[topSaboteurs[0]]
-      const second = saboteurs[topSaboteurs[1]]
-      const third = saboteurs[topSaboteurs[2]]
+      const primary = saboteurs[rankedSaboteurs[0].key]
+      const second = saboteurs[rankedSaboteurs[1].key]
+      const third = saboteurs[rankedSaboteurs[2].key]
       const scoresSummary = rankedSaboteurs
         .map(item => `${item.name}: ${item.pct}%`)
         .join('\n')
