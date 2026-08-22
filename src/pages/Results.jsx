@@ -2,10 +2,13 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { saboteurs, juizInfo, saboteurLabels } from '../data/saboteurs'
 import { saboteurKeys, getMaxScore } from '../data/questions'
+import { resultTexts } from '../data/resultTexts'
 
 const whatsappNumber = import.meta.env.VITE_WHATSAPP_NUMBER?.replace(/\D/g, '') || '5511957947776'
 const whatsappMessage = encodeURIComponent('Olá, Sandrä. Fiz o Teste de Autossabotagem e quero agendar meu Atendimento de Análise dos Sabotadores.')
 const whatsappLink = `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`
+const influentialSentence = 'A segunda e a terceira maiores pontuações mostram padrões complementares que podem reforçar a atuação do seu sabotador principal.'
+const analysisSentence = 'Para compreender como os três padrões de maior destaque atuam individualmente e em conjunto, recomendamos a Sessão de Análise do Mapa dos Sabotadores.'
 
 function ScoreBar({ pct, color = '#6CC24A', height = 8 }) {
   return (
@@ -48,6 +51,8 @@ export default function Results() {
   const rankedSaboteurs = saboteurKeys
     .map(k => ({ key: k, pct: Math.round((scores[k] / getMaxScore(k)) * 100) }))
     .sort((a, b) => b.pct - a.pct)
+  const primaryKey = rankedSaboteurs[0].key
+  const primaryResult = resultTexts[primaryKey]
 
   function intensityLabel(pct) {
     if (pct >= 75) return { label: 'Alta', color: '#1E6F30' }
@@ -152,6 +157,9 @@ export default function Results() {
               )
             })}
           </div>
+          <p className="text-sm text-gray-600 leading-relaxed mt-4">
+            {influentialSentence}
+          </p>
         </div>
 
         {/* ===== SABOTADORA PRINCIPAL DETALHADA ===== */}
@@ -159,7 +167,7 @@ export default function Results() {
           Sua sabotadora em destaque
         </p>
 
-        {top.slice(0, 1).map((key) => {
+        {[primaryKey].map((key) => {
           const info = saboteurs[key]
           const pct = Math.round((scores[key] / getMaxScore(key)) * 100)
           return (
@@ -170,22 +178,20 @@ export default function Results() {
                     <p className="text-xs font-bold uppercase tracking-widest mb-0.5" style={{ color: '#6CC24A' }}>
                       Principal sabotadora
                     </p>
-                    <h3 className="playfair text-xl font-semibold" style={{ color: '#1E6F30' }}>{info.name}</h3>
+                    <h3 className="playfair text-xl font-semibold" style={{ color: '#1E6F30' }}>{primaryResult.title}</h3>
                   </div>
                 </div>
               </div>
 
               <div className="px-6 py-5">
-                <p className="text-sm text-gray-600 leading-relaxed mb-5">{info.description}</p>
-
-                <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: '#1E6F30' }}>
-                  Como isso aparece em você
-                </p>
-                <ul className="space-y-2 list-disc pl-5">
-                  {info.signs.map((sign, idx) => (
-                    <li key={idx} className="text-sm text-gray-600 pl-1">{sign}</li>
-                  ))}
-                </ul>
+                {primaryResult.sections.map((section) => (
+                  <div key={section.heading} className="mb-5 last:mb-0">
+                    <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: '#1E6F30' }}>
+                      {section.heading}
+                    </p>
+                    <p className="text-sm text-gray-600 leading-relaxed">{section.text}</p>
+                  </div>
+                ))}
 
                 <div className="mt-5 pt-4 border-t" style={{ borderColor: '#e5e7eb' }}>
                   <div className="flex justify-between items-center mb-1.5">
@@ -205,7 +211,7 @@ export default function Results() {
             Quer conhecer o seu Mapa de Autossabotagem?
           </p>
           <p className="text-sm text-white opacity-80 mb-5 leading-relaxed">
-            No Atendimento de Análise dos Sabotadores, você identifica e compreende como esses padrões podem interferir em diferentes áreas da sua vida.
+            {analysisSentence}
           </p>
           <a
             href={whatsappLink}

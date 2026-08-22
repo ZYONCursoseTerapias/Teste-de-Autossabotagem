@@ -1,8 +1,9 @@
 import { useState, useEffect, useLayoutEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import emailjs from '@emailjs/browser'
-import { blocks, calcScores, getTopSaboteurs, getMaxScore, saboteurKeys } from '../data/questions'
+import { blocks, calcScores, getMaxScore, saboteurKeys } from '../data/questions'
 import { saboteurs, juizInfo, saboteurLabels } from '../data/saboteurs'
+import { resultTexts, formatResultText } from '../data/resultTexts'
 import { saveResult } from '../lib/supabase'
 
 const LABELS = ['Discordo totalmente', 'Discordo', 'Neutro', 'Concordo', 'Concordo totalmente']
@@ -10,7 +11,8 @@ const WHATSAPP_NUMBER = import.meta.env.VITE_WHATSAPP_NUMBER?.replace(/\D/g, '')
 const WHATSAPP_MESSAGE = encodeURIComponent('Olá, Sandrä. Fiz o Teste de Autossabotagem e quero agendar meu Atendimento de Análise dos Sabotadores.')
 const WHATSAPP_LINK = `https://wa.me/${WHATSAPP_NUMBER}?text=${WHATSAPP_MESSAGE}`
 const SERVICE_TITLE = 'Quer conhecer o seu Mapa de Autossabotagem?'
-const SERVICE_DESCRIPTION = 'No Atendimento de Análise dos Sabotadores, você identifica e compreende como esses padrões podem interferir em diferentes áreas da sua vida.'
+const INFLUENTIAL_SENTENCE = 'A segunda e a terceira maiores pontuações mostram padrões complementares que podem reforçar a atuação do seu sabotador principal.'
+const SERVICE_DESCRIPTION = 'Para compreender como os três padrões de maior destaque atuam individualmente e em conjunto, recomendamos a Sessão de Análise do Mapa dos Sabotadores.'
 
 const EMAILJS_SERVICE_ID = 'service_a1x68ec'
 const EMAILJS_RESULT_TEMPLATE_ID = 'template_mmrzxfx'
@@ -89,7 +91,6 @@ export default function Test() {
     setSaving(true)
     try {
       const scores = calcScores(answers)
-      const topSaboteurs = getTopSaboteurs(scores)
       const rankedSaboteurs = saboteurKeys
         .map(key => ({
           key,
@@ -98,9 +99,13 @@ export default function Test() {
         }))
         .sort((a, b) => b.pct - a.pct)
 
-      const primary = saboteurs[rankedSaboteurs[0].key]
+      const topSaboteurs = rankedSaboteurs.slice(0, 3).map(item => item.key)
+      const primaryKey = rankedSaboteurs[0].key
+      const primary = saboteurs[primaryKey]
       const second = saboteurs[rankedSaboteurs[1].key]
       const third = saboteurs[rankedSaboteurs[2].key]
+      const primaryResult = resultTexts[primaryKey]
+      const primaryFullText = formatResultText(primaryResult)
       const scoresSummary = rankedSaboteurs
         .map(item => `${item.name}: ${item.pct}%`)
         .join('\n')
@@ -116,8 +121,12 @@ export default function Test() {
         'Como o Crítico age em você:',
         judgeSummary,
         '',
-        `Principal sabotadora: ${primary.name}`,
-        primary.description,
+        `Sabotador principal: ${primaryResult.title}`,
+        primaryFullText,
+        '',
+        `Segundo resultado mais influente: ${second.name}`,
+        `Terceiro resultado mais influente: ${third.name}`,
+        INFLUENTIAL_SENTENCE,
         '',
         'Seus 9 Sabotadores Cúmplices:',
         scoresSummary,
@@ -149,8 +158,8 @@ export default function Test() {
           telefone: user.telefone,
           phone: user.telefone,
           date: new Date().toLocaleString('pt-BR'),
-          sabotador_principal: primary.name,
-          dominant_trait: primary.name,
+          sabotador_principal: primaryResult.title,
+          dominant_trait: primaryResult.title,
           second_name: second.name,
           third_name: third.name,
           full_detail: fullResult,
@@ -159,8 +168,8 @@ export default function Test() {
           critico_resultado: judgeSummary,
           juiz_nome: juizInfo.name,
           juiz_descricao: juizInfo.description,
-          descricao_principal: primary.description,
-          pontuacoes: scoresSummary,
+          descricao_principal: primaryFullText,
+          pontuacoes: `${scoresSummary}\n\n${INFLUENTIAL_SENTENCE}`,
           juiz: judgeSummary,
           resultado: fullResult,
           message: fullResult,
@@ -189,8 +198,8 @@ export default function Test() {
           client_phone: user.telefone,
           telefone: user.telefone,
           date: new Date().toLocaleString('pt-BR'),
-          sabotador_principal: primary.name,
-          dominant_trait: primary.name,
+          sabotador_principal: primaryResult.title,
+          dominant_trait: primaryResult.title,
           second_name: second.name,
           third_name: third.name,
           full_detail: fullResult,
