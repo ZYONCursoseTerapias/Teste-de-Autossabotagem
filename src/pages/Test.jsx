@@ -58,6 +58,7 @@ export default function Test() {
   const block = blocks[currentBlock]
   const totalBlocks = blocks.length
   const progress = Math.round(((currentBlock) / totalBlocks) * 100)
+  const questionsBeforeCurrentBlock = blocks.slice(0, currentBlock).reduce((total, item) => total + item.questions.length, 0)
 
   const allAnswered = block.questions.every(q => answers[q.id] !== undefined)
 
@@ -256,7 +257,7 @@ export default function Test() {
             {block.questions.map((q, idx) => (
               <div key={q.id} className="px-6 py-5">
                 <p className="text-sm font-medium text-gray-800 mb-4 leading-relaxed">
-                  <span className="font-bold mr-2" style={{ color: '#6CC24A' }}>{idx + 1}.</span>
+                  <span className="font-bold mr-2" style={{ color: '#6CC24A' }}>{questionsBeforeCurrentBlock + idx + 1}.</span>
                   {q.text}
                 </p>
                 <div className="grid grid-cols-5 gap-2">
