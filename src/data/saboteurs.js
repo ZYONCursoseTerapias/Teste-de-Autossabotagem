@@ -3,7 +3,7 @@ export const saboteurs = {
     name: 'Insistente',
     emoji: '📐',
     tagline: 'Perfeccionismo e necessidade de ordem levados longe demais.',
-    description: 'O Insistente vive em busca do certo, do perfeito, do organizado. Ele silencia a autocrítica tentando ser impecável — mas o custo é a rigidez, a frustração constante e o ressentimento de quem convive com padrões impossíveis de alcançar.',
+    description: 'O Insistente vive em busca do certo, do perfeito, do organizado. Ele silencia a autocrítica tentando ser impecável, mas o custo é a rigidez, a frustração constante e o ressentimento de quem convive com padrões impossíveis de alcançar.',
     signs: [
       'Dificuldade em entregar algo que não está "perfeito"',
       'Irritabilidade quando as coisas fogem do padrão esperado',
@@ -15,7 +15,7 @@ export const saboteurs = {
     name: 'Prestativa',
     emoji: '🤝',
     tagline: 'Busca de aceitação por meio de ajudar e agradar os outros.',
-    description: 'A Prestativa coloca as necessidades dos outros sempre à frente das suas, acreditando que precisa conquistar o amor e a aprovação. Com o tempo, o ressentimento cresce — porque ela dá muito e raramente recebe na mesma medida.',
+    description: 'A Prestativa coloca as necessidades dos outros sempre à frente das suas, acreditando que precisa conquistar o amor e a aprovação. Com o tempo, o ressentimento cresce porque ela dá muito e raramente recebe na mesma medida.',
     signs: [
       'Dificuldade em dizer não sem se sentir culpada',
       'Sensação de invisibilidade ou falta de reconhecimento',
@@ -24,10 +24,10 @@ export const saboteurs = {
     ],
   },
   hiper_realizador: {
-    name: 'Hiper-Realizadora',
+    name: 'Hiper Realizadora',
     emoji: '🏆',
     tagline: 'Autoestima dependente de conquistas e realizações externas.',
-    description: 'A Hiper-Realizadora só se sente valiosa quando está alcançando resultados. Ela corre de conquista em conquista, mas a felicidade nunca dura — porque o próximo objetivo já está esperando. A intimidade e os sentimentos ficam em segundo plano.',
+    description: 'A Hiper Realizadora só se sente valiosa quando está alcançando resultados. Ela corre de conquista em conquista, mas a felicidade nunca dura porque o próximo objetivo já está esperando. A intimidade e os sentimentos ficam em segundo plano.',
     signs: [
       'Sensação de vazio nos momentos de descanso',
       'Dificuldade em celebrar conquistas por muito tempo',
@@ -48,10 +48,10 @@ export const saboteurs = {
     ],
   },
   hiper_racional: {
-    name: 'Hiper-Racional',
+    name: 'Hiper Racional',
     emoji: '🧠',
     tagline: 'Foco intenso na lógica, deixando emoções e relacionamentos de lado.',
-    description: 'A Hiper-Racional confia quase exclusivamente na razão. Ela analisa tudo, debate, questiona — e pode ser vista como fria ou arrogante. Sua força intelectual se torna um escudo que a mantém distante de conexões mais profundas.',
+    description: 'A Hiper Racional confia quase exclusivamente na razão. Ela analisa tudo, debate, questiona e pode ser vista como fria ou arrogante. Sua força intelectual se torna um escudo que a mantém distante de conexões mais profundas.',
     signs: [
       'Desconforto com conversas emocionais ou sentimentais',
       'Tendência a debater e questionar mais do que acolher',
@@ -63,7 +63,7 @@ export const saboteurs = {
     name: 'Hipervigilante',
     emoji: '👁️',
     tagline: 'Ansiedade constante sobre o que pode dar errado.',
-    description: 'A Hipervigilante está sempre de guarda. Ela antecipa problemas, desconfia dos outros e raramente consegue relaxar. Sua energia vital é consumida pela vigilância constante — e as pessoas ao redor se esgotam com a intensidade dessa ansiedade.',
+    description: 'A Hipervigilante está sempre de guarda. Ela antecipa problemas, desconfia dos outros e raramente consegue relaxar. Sua energia vital é consumida pela vigilância constante, e as pessoas ao redor se esgotam com a intensidade dessa ansiedade.',
     signs: [
       'Preocupação constante mesmo em situações estáveis',
       'Dificuldade em confiar nas pessoas e nas circunstâncias',
@@ -87,7 +87,7 @@ export const saboteurs = {
     name: 'Controladora',
     emoji: '🎯',
     tagline: 'Necessidade de controlar situações e forçar a vontade nos outros.',
-    description: 'A Controladora precisa que as coisas aconteçam do jeito que ela quer. Ela assume responsabilidades, confronta, pressiona — e acredita que está ajudando. Mas o resultado é que as pessoas ao redor se sentem sufocadas e incapazes.',
+    description: 'A Controladora precisa que as coisas aconteçam do jeito que ela quer. Ela assume responsabilidades, confronta, pressiona e acredita que está ajudando. Mas o resultado é que as pessoas ao redor se sentem sufocadas e incapazes.',
     signs: [
       'Alta ansiedade quando as coisas fogem do seu controle',
       'Dificuldade em delegar e confiar no trabalho dos outros',
@@ -133,9 +133,9 @@ export const juizInfo = {
 export const saboteurLabels = {
   insistente: 'Insistente',
   prestativo: 'Prestativa',
-  hiper_realizador: 'Hiper-Realizadora',
+  hiper_realizador: 'Hiper Realizadora',
   vitima: 'Vítima',
-  hiper_racional: 'Hiper-Racional',
+  hiper_racional: 'Hiper Racional',
   hipervigilante: 'Hipervigilante',
   inquieto: 'Inquieta',
   controlador: 'Controladora',
